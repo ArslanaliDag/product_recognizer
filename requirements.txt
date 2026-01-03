@@ -1,0 +1,14 @@
+torch
+torchvision
+torchaudio
+open-clip-torch==2.0.2
+pillow
+opencv-python
+faiss-cpu
+pyqt6
+sqlalchemy
+tqdm
+fastapi
+uvicorn
+python-multipart
+easyocr
