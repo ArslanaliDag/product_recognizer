@@ -235,4 +235,4 @@ async def add_product(
 if __name__ == "__main__":
     import uvicorn
     # 0.0.0.0 позволяет доступ внутри локальной сети
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8100)
