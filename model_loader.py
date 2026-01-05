@@ -8,7 +8,7 @@ class ModelLoader:
     def __init__(self, model_name="ViT-H-14", pretrained="laion2b_s32b_b79k", device=None):
         self.model_name = model_name
         self.pretrained = pretrained
-        self.device = device or "cpu"
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model = None
         self.preprocess = None
         self.model_dim = None

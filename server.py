@@ -11,6 +11,7 @@ from PIL import Image
 import numpy as np
 import easyocr
 from thefuzz import fuzz
+import torch
 
 # Импорт твоих модулей
 from model_loader import ModelLoader
@@ -51,9 +52,20 @@ async def startup_event():
     global model_loader, embedder, faiss_db, product_manager, ocr_reader
     print("🚀 Запуск сервера. Загрузка моделей...")
     
+    # Определяем устройство автоматически
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Используемое устройство: {device}")
+
+    print(f"cuda: {torch.cuda.is_available()}")  # Должно быть True
+    print(f"cuba: {torch.cuda.get_device_name(0)}")  # Должна быть GeForce GTX 1070
+    
     # 1. AI Модель
     # ViT-L-14 оптимален. Если будет тормозить - ставь ViT-B-16. Если много памяти - ViT-H-14.
-    model_loader = ModelLoader(model_name="ViT-H-14", pretrained="laion2b_s32b_b79k") 
+    model_loader = ModelLoader(
+        model_name="ViT-H-14", 
+        pretrained="laion2b_s32b_b79k",
+        device=device
+    )
     embedder = Embedder(model_loader)
     
     # 2. База данных
@@ -231,6 +243,24 @@ async def add_product(
     
     finally:
         shutil.rmtree(temp_dir)
+
+@app.get("/debug/gpu")
+async def debug_gpu():
+    info = {
+        "cuda_available": torch.cuda.is_available(),
+        "device_count": torch.cuda.device_count() if torch.cuda.is_available() else 0,
+    }
+    
+    if torch.cuda.is_available():
+        info.update({
+            "current_device": torch.cuda.current_device(),
+            "device_name": torch.cuda.get_device_name(0),
+            "memory_allocated": f"{torch.cuda.memory_allocated()/1e9:.2f}GB",
+            "memory_reserved": f"{torch.cuda.memory_reserved()/1e9:.2f}GB",
+            "total_memory": f"{torch.cuda.get_device_properties(0).total_memory/1e9:.2f}GB",
+        })
+    
+    return info
 
 if __name__ == "__main__":
     import uvicorn
