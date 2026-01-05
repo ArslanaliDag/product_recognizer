@@ -2,3 +2,6 @@ venv/
 .git/
 .vscode/
 __pycache__
+products/*
+db.sqlite
+embeddings/*

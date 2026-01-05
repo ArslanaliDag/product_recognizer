@@ -64,7 +64,7 @@ async def startup_event():
     print("Загрузка OCR...")
     try:
         # gpu=False для надежности при демо. Поставь True, если настроил драйвера.
-        ocr_reader = easyocr.Reader(['en', 'ru'], gpu=False)
+        ocr_reader = easyocr.Reader(['en', 'ru'], gpu=True)
     except Exception as e:
         print(f"Ошибка загрузки OCR: {e}")
         ocr_reader = None
@@ -235,4 +235,4 @@ async def add_product(
 if __name__ == "__main__":
     import uvicorn
     # 0.0.0.0 позволяет доступ внутри локальной сети
-    uvicorn.run(app, host="0.0.0.0", port=8100)
+    uvicorn.run(app, host="127.0.0.1", port=8100)
